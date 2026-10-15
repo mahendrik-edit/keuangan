@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keuangan BOS</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#e9f3ff;--card:rgba(255,255,255,.5);--ink:#0b1b33;--sub:#4a5b78;--line:rgba(60,90,140,.16);--fill:rgba(255,255,255,.6);--blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;--purple:#bf5af2;--red:#ff453a;--bar:rgba(255,255,255,.5)}
+@media not all{:root:not([data-theme="light"]){--bg:#000;--card:#1c1c1e;--ink:#fff;--sub:#98989f;--line:#38383a;--fill:#2c2c2e;--blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;--purple:#bf5af2;--red:#ff453a;--bar:rgba(28,28,30,.82)}}
+:root[data-theme="x-off"]{--bg:#000;--card:#1c1c1e;--ink:#fff;--sub:#98989f;--line:#38383a;--fill:#2c2c2e;--blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;--purple:#bf5af2;--red:#ff453a;--bar:rgba(28,28,30,.82)}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:17px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bar);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:10}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 55%,transparent);outline-offset:2px;border-radius:8px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px 90px}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bar);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:.5px solid var(--line)}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-bottom:0;height:48px}
+.nav b{font-weight:600}.nav a{color:var(--blue);text-decoration:none;margin-left:18px;font-size:15px}
+h1{font-size:clamp(2.1rem,7vw,2.9rem);letter-spacing:-.025em;margin:22px 0 4px;font-weight:800}
+.lead{color:var(--sub);margin:0 0 6px;max-width:54ch}
+h2{font-size:1.4rem;letter-spacing:-.015em;margin:34px 0 12px;font-weight:700}
+.card{background:var(--card);border-radius:20px;padding:18px}
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.app{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:20px;padding:16px;text-decoration:none;color:inherit;transition:transform .18s cubic-bezier(.3,1.4,.5,1)}
+.app:hover{transform:scale(1.025)}.app:active{transform:scale(.96)}
+.ico{flex:none;width:60px;height:60px;border-radius:14px;display:grid;place-items:center;font-size:30px;color:#fff;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.1)}
+.app b{display:block;font-size:1.05rem}.app span{color:var(--sub);font-size:.9rem;line-height:1.3;display:block}
+.app.soon{opacity:.7;pointer-events:none}.get{margin-left:auto;flex:none;background:var(--fill);color:var(--blue);font-weight:600;font-size:14px;padding:5px 14px;border-radius:99px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{background:var(--card);border-radius:20px;padding:14px 16px}
+.stat b{display:block;font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}.stat span{color:var(--sub);font-size:.85rem}
+.split{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;align-items:start}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mh strong{font-size:1.15rem}.mh div{display:flex;gap:6px}
+.round{background:var(--fill);color:var(--blue);width:34px;height:34px;border-radius:50%;font-size:18px;font-weight:600}
+.round.txt{width:auto;padding:0 14px;font-size:14px;border-radius:99px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.dow{color:var(--sub);font-size:.75rem;font-weight:600;padding:4px 0}
+.day{aspect-ratio:1/1.05;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:1rem;transition:background .15s}
+.day:hover{background:var(--fill)}
+.day i{font-style:normal;width:32px;height:32px;display:grid;place-items:center;border-radius:50%}
+.day.out{color:var(--sub);opacity:.45}
+.day.today i{color:var(--blue);font-weight:700}
+.day.sel i{background:var(--blue);color:#fff;font-weight:700}
+.day.today.sel i{color:#fff}
+.dots{display:flex;gap:3px;height:6px}.dots u{width:6px;height:6px;border-radius:50%;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;color:var(--sub);font-size:.8rem}
+.legend span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--c)}
+.agenda h3{margin:0 0 2px;font-size:1.1rem}.agenda p.d{color:var(--sub);margin:0 0 10px;font-size:.9rem}
+.seg{display:flex;background:var(--fill);border-radius:10px;padding:2px;gap:2px;overflow-x:auto;margin-bottom:6px}
+.seg button{flex:1;padding:6px 12px;border-radius:8px;font-size:.88rem;font-weight:500;white-space:nowrap;transition:background .2s}
+.seg button[aria-pressed=true]{background:var(--card);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.14)}
+ul.l{list-style:none;margin:0;padding:0}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:.5px solid var(--line);animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(-4px)}}
+.chk{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--sub);display:grid;place-items:center;color:transparent;font-size:14px;font-weight:700;transition:all .2s}
+.row.done .chk{background:var(--blue);border-color:var(--blue);color:#fff}
+.row.done .tt{color:var(--sub);text-decoration:line-through}
+.tt{flex:1;min-width:0;text-align:left;overflow-wrap:anywhere}.tt small{display:block;color:var(--sub);text-decoration:none;font-size:.8rem}
+.row.late .tt small{color:var(--red);font-weight:500}
+.pill{flex:none;font-size:.75rem;font-weight:600;color:#fff;padding:2px 9px;border-radius:99px;background:var(--c)}
+.x{color:var(--sub);font-size:20px;padding:2px 8px}.x:hover{color:var(--red)}
+.empty{color:var(--sub);text-align:center;padding:22px 0 8px;margin:0}
+.btn{background:var(--blue);color:#fff;font-weight:600;border-radius:12px;padding:12px 18px;width:100%;margin-top:12px}
+.btn:active{opacity:.7}
+.fab{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;font-size:30px;line-height:1;box-shadow:0 6px 18px rgba(0,122,255,.45);z-index:8;transition:transform .2s}
+.fab:hover{transform:scale(1.08) rotate(90deg)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.ov.on{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:16px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:up .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes up{from{transform:translateY(100%)}}
+@media (min-width:640px){.ov{align-items:center}.sheet{border-radius:24px}}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sh b{font-size:1.05rem}.sh button{color:var(--blue)}
+.grp{background:var(--card);border-radius:14px;overflow:hidden}
+.grp label{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-top:.5px solid var(--line)}
+.grp label:first-child{border-top:0}.grp span{color:var(--ink);flex:none}
+.grp input,.grp select{font:inherit;color:var(--ink);background:none;border:0;text-align:right;min-width:0;flex:1;outline:0}
+.grp input#fT{text-align:left}
+body::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(34px);background:radial-gradient(circle at 15% 15%,#ffc2e0 0,transparent 30%),radial-gradient(circle at 85% 10%,#9fd4ff 0,transparent 32%),radial-gradient(circle at 75% 75%,#aaf0c4 0,transparent 32%),radial-gradient(circle at 12% 80%,#ffe0a3 0,transparent 30%),radial-gradient(circle at 50% 45%,#d9c8ff 0,transparent 28%);animation:drift 24s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(5%,4%) scale(1.1) rotate(8deg)}}
+.card,.app,.stat{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.34));backdrop-filter:blur(26px) saturate(190%);-webkit-backdrop-filter:blur(26px) saturate(190%);border:1px solid rgba(255,255,255,.8);box-shadow:0 10px 34px rgba(40,90,170,.14),inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.3)}
+.card::before,.app::before,.stat::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.55) 0,rgba(255,255,255,0) 38%)}
+.app:hover{box-shadow:0 14px 40px rgba(40,90,170,.22),inset 0 1.5px 0 #fff}
+.ico{box-shadow:0 6px 14px rgba(40,90,170,.28),inset 0 1.5px 0 rgba(255,255,255,.7),inset 0 -2px 4px rgba(0,0,0,.08)}
+.round,.get,.seg{border:1px solid rgba(255,255,255,.8);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.seg button[aria-pressed=true]{background:rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(40,90,170,.18)}
+.day.sel i{background:linear-gradient(#4aa8ff,#0a84ff);box-shadow:0 4px 12px rgba(10,132,255,.45),inset 0 1px 0 rgba(255,255,255,.5)}
+.chk{background:rgba(255,255,255,.6);border-color:rgba(74,91,120,.5)}
+.row.done .chk{background:linear-gradient(#4aa8ff,#0a84ff)}
+.btn,.fab{background:linear-gradient(#4aa8ff,#0a84ff);box-shadow:0 6px 18px rgba(10,132,255,.38),inset 0 1.5px 0 rgba(255,255,255,.55)}
+.ov{background:rgba(110,140,200,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.sheet{background:linear-gradient(135deg,rgba(255,255,255,.85),rgba(255,255,255,.6));backdrop-filter:blur(34px) saturate(190%);-webkit-backdrop-filter:blur(34px) saturate(190%);border:1px solid rgba(255,255,255,.85);box-shadow:0 -10px 50px rgba(40,90,170,.22),inset 0 1.5px 0 #fff}
+.grp{background:rgba(255,255,255,.75)}
+.sy{margin-left:18px;font-size:14px;color:var(--blue);display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
+.sy::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sub)}
+.sy.ok::before{background:var(--green)}.sy.err::before{background:var(--red)}.sy.busy::before{background:var(--orange)}
+.hint{color:var(--sub);font-size:.85rem;margin:10px 4px 0}
+.btn.ghost{background:rgba(255,255,255,.7);color:var(--red);box-shadow:none}
+@media (max-width:700px){.nav a{display:none}.sy{margin-left:0}}
+@media (max-width:700px){.split{grid-template-columns:1fr}.nav a{margin-left:12px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="nav"><div class="wrap"><b>Keuangan BOS</b><div><a href="#alat">Alat</a><a href="#kalender">Kalender</a><a href="#tugas">Tugas</a><button class="sy" id="sy" type="button">Sinkron</button></div></div></div>
+<div class="wrap">
+<main>
+<h1>Keuangan BOS</h1>
+<p class="lead">Satu tempat untuk Bosnas, Bosda, dan aset sekolah. Buka alat bantu, lalu atur tugas dan tenggat Anda.</p>
+
+<h2 id="alat">Alat bantu</h2>
+<div class="apps">
+ <a class="app" href="https://mahendrik-edit.github.io/persuratan/" target="_blank" rel="noopener"><div class="ico" style="background:linear-gradient(#5ac8fa,#007aff)">✉️</div><div><b>Persuratan</b><span>Nomor surat otomatis dan template surat</span></div><em class="get" style="font-style:normal">Buka</em></a>
+ <a class="app" href="https://mahendrik-edit.github.io/kode-rekening/" target="_blank" rel="noopener"><div class="ico" style="background:linear-gradient(#6fe08a,#28a745)">🧾</div><div><b>Kode Rekening</b><span>Kode rekening, standar harga, dan pengecekannya</span></div><em class="get" style="font-style:normal">Buka</em></a>
+ <div class="app soon"><div class="ico" style="background:linear-gradient(#ffb340,#ff9500)">📦</div><div><b>Aset</b><span>Inventaris barang sekolah</span></div><em class="get" style="font-style:normal">Segera</em></div>
+</div>
+
+<h2>Ringkasan tugas</h2>
+<div class="stats">
+ <div class="stat"><b id="s1">0</b><span>Belum selesai</span></div>
+ <div class="stat"><b id="s2" style="color:var(--orange)">0</b><span>Jatuh tempo 7 hari</span></div>
+ <div class="stat"><b id="s3" style="color:var(--red)">0</b><span>Terlambat</span></div>
+</div>
+
+<h2 id="kalender">Kalender</h2>
+<div class="split">
+ <div class="card">
+  <div class="mh"><strong id="mt"></strong><div><button class="round txt" id="tdy">Hari ini</button><button class="round" id="pv" aria-label="Bulan sebelumnya">‹</button><button class="round" id="nx" aria-label="Bulan berikutnya">›</button></div></div>
+  <div class="grid" id="cal"></div>
+  <div class="legend"><span style="--c:var(--blue)">Bosnas</span><span style="--c:var(--green)">Bosda</span><span style="--c:var(--orange)">Aset</span><span style="--c:var(--purple)">Umum</span></div>
+ </div>
+ <div class="card agenda">
+  <h3 id="ah"></h3><p class="d" id="ac"></p>
+  <ul class="l" id="al"></ul>
+  <button class="btn" id="addDay">Tambah tugas di tanggal ini</button>
+ </div>
+</div>
+
+<h2 id="tugas">Semua tugas</h2>
+<div class="card">
+ <div class="seg" id="seg" role="group" aria-label="Filter kategori"></div>
+ <ul class="l" id="tl"></ul>
+</div>
+</main>
+</div>
+<button class="fab" id="fab" aria-label="Tambah tugas">+</button>
+
+<div class="ov" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-label="Tugas baru">
+ <div class="sh"><button id="cx">Batal</button><b>Tugas baru</b><button id="sv"><b style="color:var(--blue)">Simpan</b></button></div>
+ <div class="grp">
+  <label><input id="fT" type="text" maxlength="140" placeholder="Contoh: Susun LPJ Bosnas"></label>
+  <label><span>Kategori</span><select id="fC"><option>Bosnas</option><option>Bosda</option><option>Aset</option><option>Umum</option></select></label>
+  <label><span>Tenggat</span><input id="fD" type="date"></label>
+ </div>
+</div></div>
+
+<div class="ov" id="ov2"><div class="sheet" role="dialog" aria-modal="true" aria-label="Sinkronisasi">
+ <div class="sh"><button id="cx2">Tutup</button><b>Sinkronisasi</b><button id="sv2"><b style="color:var(--blue)">Hubungkan</b></button></div>
+ <div class="grp">
+  <label><span>URL</span><input id="gU" type="url" placeholder="https://script.google.com/macros/s/.../exec"></label>
+ </div>
+ <p class="hint" id="gS"></p>
+ <button class="btn ghost" id="off" type="button">Putuskan sinkronisasi</button>
+</div></div>
+
+<script>
+(function(){
+var KEY="bos-tugas-v1",CL={Bosnas:"var(--blue)",Bosda:"var(--green)",Aset:"var(--orange)",Umum:"var(--purple)"};
+var MN=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+var DW=["Sen","Sel","Rab","Kam","Jum","Sab","Min"];
+var tasks=[],filter="Semua",$=function(i){return document.getElementById(i)};
+function p2(n){return(n<10?"0":"")+n}
+function ymd(d){return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())}
+var now=new Date(),today=ymd(now),sel=today,vy=now.getFullYear(),vm=now.getMonth();
+function load(){try{var r=localStorage.getItem(KEY);tasks=r?JSON.parse(r):[];if(!Array.isArray(tasks))tasks=[]}catch(e){tasks=[]}
+ tasks.forEach(function(t,i){if(!t.id)t.id=Date.now()+i;if(!t.updatedAt)t.updatedAt=1});
+ try{graves=JSON.parse(localStorage.getItem(KEY+"-g"))||[]}catch(e){graves=[]}
+ try{CFG=JSON.parse(localStorage.getItem(KEY+"-cfg"))||CFG}catch(e){}}
+var graves=[],CFG={url:"",key:""},timer=null,busy=false,again=false,lastMsg="";
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(tasks));localStorage.setItem(KEY+"-g",JSON.stringify(graves))}catch(e){}}
+function save(){persist();clearTimeout(timer);timer=setTimeout(sync,700)}
+function fmt(s){if(!s)return"Tanpa tenggat";var a=s.split("-");return+a[2]+" "+MN[a[1]-1]+" "+a[0]}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function row(t){
+ var late=!t.done&&t.due&&t.due<today;
+ var li=el("li","row"+(t.done?" done":"")+(late?" late":""));li.style.setProperty("--c",CL[t.cat]);
+ var c=el("button","chk","✓");c.setAttribute("aria-label","Tandai selesai: "+t.title);
+ c.onclick=function(){t.done=!t.done;t.updatedAt=Date.now();save();render()};
+ var b=el("button","tt");b.appendChild(el("span",null,t.title));b.appendChild(el("small",null,(late?"Terlambat · ":"")+fmt(t.due)));
+ b.onclick=function(){if(t.due){var a=t.due.split("-");vy=+a[0];vm=a[1]-1;sel=t.due;render();$("kalender").scrollIntoView({behavior:"smooth"})}};
+ var p=el("span","pill",t.cat),x=el("button","x","×");x.setAttribute("aria-label","Hapus: "+t.title);
+ x.onclick=function(){tasks=tasks.filter(function(k){return k!==t});graves.push({id:t.id,title:t.title,cat:t.cat,due:t.due,done:t.done,deleted:true,updatedAt:Date.now()});save();render()};
+ li.append(c,b,p,x);return li}
+function fill(ul,arr,msg){ul.innerHTML="";if(!arr.length){ul.appendChild(el("p","empty",msg));return}arr.forEach(function(t){ul.appendChild(row(t))})}
+function render(){
+ var h=$("cal");h.innerHTML="";$("mt").textContent=MN[vm]+" "+vy;
+ DW.forEach(function(d){h.appendChild(el("div","dow",d))});
+ var off=(new Date(vy,vm,1).getDay()+6)%7,start=new Date(vy,vm,1-off);
+ for(var i=0;i<42;i++){
+  var d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i),s=ymd(d);
+  var b=el("button","day"+(d.getMonth()!==vm?" out":"")+(s===today?" today":"")+(s===sel?" sel":""));
+  b.appendChild(el("i",null,d.getDate()));
+  var dots=el("div","dots");
+  tasks.filter(function(t){return t.due===s&&!t.done}).slice(0,3).forEach(function(t){var u=el("u");u.style.background=CL[t.cat];dots.appendChild(u)});
+  b.appendChild(dots);b.setAttribute("aria-label",fmt(s));
+  (function(s,d){b.onclick=function(){sel=s;if(d.getMonth()!==vm){vm=d.getMonth();vy=d.getFullYear()}render()}})(s,d);
+  h.appendChild(b)}
+ var dt=tasks.filter(function(t){return t.due===sel});
+ $("ah").textContent=sel===today?"Hari ini":fmt(sel);
+ $("ac").textContent=dt.length?dt.length+" tugas":"Tidak ada tugas";
+ fill($("al"),dt,"Hari yang lapang. Tambahkan tugas bila perlu.");
+ var cats=["Semua","Bosnas","Bosda","Aset","Umum"],sg=$("seg");sg.innerHTML="";
+ cats.forEach(function(c){var b=el("button",null,c);b.type="button";b.setAttribute("aria-pressed",String(c===filter));b.onclick=function(){filter=c;render()};sg.appendChild(b)});
+ var all=tasks.filter(function(t){return filter==="Semua"||t.cat===filter}).sort(function(a,b){return(a.done-b.done)||((a.due||"9999")>(b.due||"9999")?1:-1)});
+ fill($("tl"),all,tasks.length?"Belum ada tugas di kategori ini.":"Belum ada tugas. Ketuk + untuk membuat yang pertama.");
+ var open=tasks.filter(function(t){return!t.done}),w=ymd(new Date(now.getFullYear(),now.getMonth(),now.getDate()+7));
+ $("s1").textContent=open.length;
+ $("s2").textContent=open.filter(function(t){return t.due&&t.due>=today&&t.due<=w}).length;
+ $("s3").textContent=open.filter(function(t){return t.due&&t.due<today}).length}
+function merge(a,b){var m={};a.concat(b).forEach(function(t){var k=String(t.id),c=m[k];if(!c||(t.updatedAt||0)>(c.updatedAt||0))m[k]=t});return Object.keys(m).map(function(k){return m[k]})}
+function setStatus(c,msg){var b=$("sy");b.className="sy "+c;lastMsg=msg||"";
+ b.textContent=({ok:"Tersinkron",busy:"Menyinkronkan",err:"Gagal sinkron"})[c]||"Sinkron";b.title=lastMsg;$("gS").textContent=lastMsg}
+function sync(){
+ if(!CFG.url)return;
+ if(busy){again=true;return}
+ busy=true;setStatus("busy","Menyinkronkan data\u2026");
+ fetch(CFG.url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tasks:tasks.concat(graves)})})
+ .then(function(r){return r.json()})
+ .then(function(d){
+  if(d.error)throw new Error(d.error);
+  var all=merge(tasks.concat(graves),d.tasks||[]);
+  tasks=all.filter(function(t){return!t.deleted});graves=all.filter(function(t){return t.deleted});
+  persist();render();
+  var n=new Date();setStatus("ok","Terakhir sinkron "+p2(n.getHours())+":"+p2(n.getMinutes()))})
+ .catch(function(e){setStatus("err","Tidak bisa terhubung. Periksa URL, akses \"Siapa saja\", dan koneksi internet.")})
+ .then(function(){busy=false;if(again){again=false;sync()}})}
+function openCfg(){$("gU").value=CFG.url;$("gS").textContent=lastMsg||(CFG.url?"":"Belum terhubung. Tempel URL Apps Script.");$("ov2").classList.add("on")}
+function closeCfg(){$("ov2").classList.remove("on")}
+$("sy").onclick=openCfg;$("cx2").onclick=closeCfg;
+$("ov2").onclick=function(e){if(e.target===$("ov2"))closeCfg()};
+$("sv2").onclick=function(){var u=$("gU").value.trim();if(!/^https:\/\//.test(u)){$("gS").textContent="URL harus diawali https://";return}
+ CFG={url:u,key:""};try{localStorage.setItem(KEY+"-cfg",JSON.stringify(CFG))}catch(e){}
+ closeCfg();sync()};
+$("off").onclick=function(){CFG={url:"",key:""};try{localStorage.removeItem(KEY+"-cfg")}catch(e){}setStatus("","Sinkronisasi diputus. Data tetap ada di browser ini.");closeCfg()};
+document.addEventListener("visibilitychange",function(){if(!document.hidden)sync()});
+function openSheet(d){$("fT").value="";$("fD").value=d||"";$("ov").classList.add("on");setTimeout(function(){$("fT").focus()},50)}
+function closeSheet(){$("ov").classList.remove("on")}
+function saveTask(){var t=$("fT").value.trim();if(!t){$("fT").focus();return}
+ var d=$("fD").value;tasks.push({id:Date.now()+"-"+Math.floor(Math.random()*1e4),title:t,cat:$("fC").value,due:d,done:false,updatedAt:Date.now()});
+ if(d){var a=d.split("-");vy=+a[0];vm=a[1]-1;sel=d}save();closeSheet();render()}
+$("fab").onclick=function(){openSheet(sel)};$("addDay").onclick=function(){openSheet(sel)};
+$("cx").onclick=closeSheet;$("sv").onclick=saveTask;
+$("ov").onclick=function(e){if(e.target===$("ov"))closeSheet()};
+$("fT").onkeydown=function(e){if(e.key==="Enter")saveTask()};
+document.onkeydown=function(e){if(e.key==="Escape"){closeSheet();closeCfg()}};
+$("pv").onclick=function(){vm--;if(vm<0){vm=11;vy--}render()};
+$("nx").onclick=function(){vm++;if(vm>11){vm=0;vy++}render()};
+$("tdy").onclick=function(){vy=now.getFullYear();vm=now.getMonth();sel=today;render()};
+load();render();if(CFG.url)sync();setInterval(sync,60000)})();
+</script>
+</body>
+</html>
