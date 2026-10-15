@@ -168,6 +168,8 @@ body::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
 
 <script>
 (function(){
+// Isi dengan URL Apps Script (berakhiran /exec) agar semua perangkat otomatis tersambung.
+var DEFAULT_URL="https://script.google.com/macros/s/AKfycbxffXB6WCHjxauDQU1HnxQ6tpwUMtg8puLjq3gMqP24i1vI7C5UkVXufdBwEJqd3Dn8Ew/exec";
 var KEY="bos-tugas-v1",CL={Bosnas:"var(--blue)",Bosda:"var(--green)",Aset:"var(--orange)",Umum:"var(--purple)"};
 var MN=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 var DW=["Sen","Sel","Rab","Kam","Jum","Sab","Min"];
@@ -178,7 +180,8 @@ var now=new Date(),today=ymd(now),sel=today,vy=now.getFullYear(),vm=now.getMonth
 function load(){try{var r=localStorage.getItem(KEY);tasks=r?JSON.parse(r):[];if(!Array.isArray(tasks))tasks=[]}catch(e){tasks=[]}
  tasks.forEach(function(t,i){if(!t.id)t.id=Date.now()+i;if(!t.updatedAt)t.updatedAt=1});
  try{graves=JSON.parse(localStorage.getItem(KEY+"-g"))||[]}catch(e){graves=[]}
- try{CFG=JSON.parse(localStorage.getItem(KEY+"-cfg"))||CFG}catch(e){}}
+ try{CFG=JSON.parse(localStorage.getItem(KEY+"-cfg"))||CFG}catch(e){}
+ if(!CFG.url&&DEFAULT_URL)CFG={url:DEFAULT_URL,key:""}}
 var graves=[],CFG={url:"",key:""},timer=null,busy=false,again=false,lastMsg="";
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(tasks));localStorage.setItem(KEY+"-g",JSON.stringify(graves))}catch(e){}}
 function save(){persist();clearTimeout(timer);timer=setTimeout(sync,700)}
@@ -228,14 +231,14 @@ function sync(){
  if(busy){again=true;return}
  busy=true;setStatus("busy","Menyinkronkan data\u2026");
  fetch(CFG.url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tasks:tasks.concat(graves)})})
- .then(function(r){return r.json()})
- .then(function(d){
+ .then(function(r){return r.text()})
+ .then(function(t){var d;try{d=JSON.parse(t)}catch(x){throw new Error("html")}
   if(d.error)throw new Error(d.error);
   var all=merge(tasks.concat(graves),d.tasks||[]);
   tasks=all.filter(function(t){return!t.deleted});graves=all.filter(function(t){return t.deleted});
   persist();render();
   var n=new Date();setStatus("ok","Terakhir sinkron "+p2(n.getHours())+":"+p2(n.getMinutes()))})
- .catch(function(e){setStatus("err","Tidak bisa terhubung. Periksa URL, akses \"Siapa saja\", dan koneksi internet.")})
+ .catch(function(e){console.error(e);var m=e.message==="html"?"Google mengirim halaman login atau error, bukan data. Deploy ulang dengan akses \"Siapa saja\" dan pakai URL yang berakhiran /exec.":(e instanceof TypeError?"Browser tidak bisa menjangkau URL. Periksa URL (berakhiran /exec), akses \"Siapa saja\", dan koneksi internet.":"Error dari Apps Script: "+e.message);setStatus("err",m)})
  .then(function(){busy=false;if(again){again=false;sync()}})}
 function openCfg(){$("gU").value=CFG.url;$("gS").textContent=lastMsg||(CFG.url?"":"Belum terhubung. Tempel URL Apps Script.");$("ov2").classList.add("on")}
 function closeCfg(){$("ov2").classList.remove("on")}
