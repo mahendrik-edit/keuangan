@@ -99,13 +99,20 @@ body::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
 .sy.ok::before{background:var(--green)}.sy.err::before{background:var(--red)}.sy.busy::before{background:var(--orange)}
 .hint{color:var(--sub);font-size:.85rem;margin:10px 4px 0}
 .btn.ghost{background:rgba(255,255,255,.7);color:var(--red);box-shadow:none}
-@media (max-width:700px){.nav a{display:none}.sy{margin-left:0}}
+.docbar{display:flex;gap:10px;margin-bottom:10px}
+.docbar input{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--fill);border:1px solid rgba(255,255,255,.8);border-radius:10px;padding:8px 12px;outline:0}
+.fi{flex:none;width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:.7rem;font-weight:700;background:var(--c);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.45)}
+.fa{display:flex;gap:6px;align-items:center;flex:none}
+.fa button,.fa a{background:var(--fill);color:var(--blue);font-size:.85rem;font-weight:600;padding:4px 12px;border-radius:99px;text-decoration:none}
+.pv{max-width:920px;height:88vh;display:flex;flex-direction:column}
+.pv iframe{flex:1;width:100%;border:0;border-radius:12px;background:#fff}
+@media (max-width:700px){.nav a{display:none}.sy{margin-left:0}.row.file{flex-wrap:wrap}}
 @media (max-width:700px){.split{grid-template-columns:1fr}.nav a{margin-left:12px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="nav"><div class="wrap"><b>Keuangan BOS</b><div><a href="#alat">Alat</a><a href="#kalender">Kalender</a><a href="#tugas">Tugas</a><button class="sy" id="sy" type="button">Sinkron</button></div></div></div>
+<div class="nav"><div class="wrap"><b>Keuangan BOS</b><div><a href="#alat">Alat</a><a href="#kalender">Kalender</a><a href="#tugas">Tugas</a><a href="#dokumen">Dokumen</a><button class="sy" id="sy" type="button">Sinkron</button></div></div></div>
 <div class="wrap">
 <main>
 <h1>Keuangan BOS</h1>
@@ -115,7 +122,7 @@ body::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
 <div class="apps">
  <a class="app" href="https://mahendrik-edit.github.io/persuratan/" target="_blank" rel="noopener"><div class="ico" style="background:linear-gradient(#5ac8fa,#007aff)">✉️</div><div><b>Persuratan</b><span>Nomor surat otomatis dan template surat</span></div><em class="get" style="font-style:normal">Buka</em></a>
  <a class="app" href="https://mahendrik-edit.github.io/kode-rekening/" target="_blank" rel="noopener"><div class="ico" style="background:linear-gradient(#6fe08a,#28a745)">🧾</div><div><b>Kode Rekening</b><span>Kode rekening, standar harga, dan pengecekannya</span></div><em class="get" style="font-style:normal">Buka</em></a>
- <div class="app soon"><div class="ico" style="background:linear-gradient(#ffb340,#ff9500)">📦</div><div><b>Aset</b><span>Inventaris barang sekolah</span></div><em class="get" style="font-style:normal">Segera</em></div>
+ <a class="app" href="https://mahendrik-edit.github.io/stok-barang/" target="_blank" rel="noopener"><div class="ico" style="background:linear-gradient(#ffb340,#ff9500)">📦</div><div><b>Aset</b><span>Stok dan inventaris barang sekolah</span></div><em class="get" style="font-style:normal">Buka</em></a>
 </div>
 
 <h2>Ringkasan tugas</h2>
@@ -144,6 +151,13 @@ body::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
  <div class="seg" id="seg" role="group" aria-label="Filter kategori"></div>
  <ul class="l" id="tl"></ul>
 </div>
+<h2 id="dokumen">Dokumen</h2>
+<div class="card">
+ <div class="docbar"><input id="fq" type="search" placeholder="Cari dokumen" aria-label="Cari dokumen"><button class="round txt" id="up" type="button">Unggah</button></div>
+ <div class="seg" id="fseg" role="group" aria-label="Filter kategori dokumen"></div>
+ <ul class="l" id="fl"></ul>
+ <p class="hint" id="fh"></p>
+</div>
 </main>
 </div>
 <button class="fab" id="fab" aria-label="Tambah tugas">+</button>
@@ -160,10 +174,23 @@ body::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
 <div class="ov" id="ov2"><div class="sheet" role="dialog" aria-modal="true" aria-label="Sinkronisasi">
  <div class="sh"><button id="cx2">Tutup</button><b>Sinkronisasi</b><button id="sv2"><b style="color:var(--blue)">Hubungkan</b></button></div>
  <div class="grp">
-  <label><span>URL</span><input id="gU" type="url" placeholder="https://script.google.com/macros/s/AKfycbx2aMubkF0lDAAt3btH5lxXA_FiZdCoJbe0gfH3r6JHt4KbKPrtSr5Smc184oGL-9PCaQ/exec"></label>
+  <label><span>URL</span><input id="gU" type="url" placeholder="https://script.google.com/macros/s/.../exec"></label>
  </div>
  <p class="hint" id="gS"></p>
  <button class="btn ghost" id="off" type="button">Putuskan sinkronisasi</button>
+</div></div>
+
+<div class="ov" id="ov3"><div class="sheet pv" role="dialog" aria-modal="true" aria-label="Pratinjau dokumen">
+ <div class="sh"><button id="cx3">Tutup</button><b id="pT" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 10px"></b><a id="pO" href="#" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;flex:none">Buka di Drive</a></div>
+ <iframe id="pf" title="Pratinjau dokumen"></iframe>
+</div></div>
+<div class="ov" id="ov4"><div class="sheet" role="dialog" aria-modal="true" aria-label="Unggah dokumen">
+ <div class="sh"><button id="cx4">Batal</button><b>Unggah dokumen</b><button id="us"><b style="color:var(--blue)">Unggah</b></button></div>
+ <div class="grp">
+  <label><span>Berkas</span><input id="uF" type="file" accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.png,.jpg,.jpeg"></label>
+  <label><span>Kategori</span><select id="uC"><option>Peraturan</option><option>Excel</option><option>Panduan</option><option>Lainnya</option></select></label>
+ </div>
+ <p class="hint" id="uS"></p>
 </div></div>
 
 <script>
@@ -246,9 +273,63 @@ $("sy").onclick=openCfg;$("cx2").onclick=closeCfg;
 $("ov2").onclick=function(e){if(e.target===$("ov2"))closeCfg()};
 $("sv2").onclick=function(){var u=$("gU").value.trim();if(!/^https:\/\//.test(u)){$("gS").textContent="URL harus diawali https://";return}
  CFG={url:u,key:""};try{localStorage.setItem(KEY+"-cfg",JSON.stringify(CFG))}catch(e){}
- closeCfg();sync()};
+ closeCfg();sync();loadFiles()};
 $("off").onclick=function(){CFG={url:"",key:""};try{localStorage.removeItem(KEY+"-cfg")}catch(e){}setStatus("","Sinkronisasi diputus. Data tetap ada di browser ini.");closeCfg()};
 document.addEventListener("visibilitychange",function(){if(!document.hidden)sync()});
+var files=[],fcat="Semua";
+function fext(n){var m=/\.([a-z0-9]+)$/i.exec(n);return m?m[1].toLowerCase():""}
+function fcolor(x){return x==="pdf"?"#ff453a":/^(xls|xlsx|csv)$/.test(x)?"#30d158":/^docx?$/.test(x)?"#0a84ff":/^(png|jpe?g)$/.test(x)?"#bf5af2":"#8e8e93"}
+function fsize(b){return b>=1048576?(b/1048576).toFixed(1)+" MB":Math.max(1,Math.round(b/1024))+" KB"}
+function jreq(url,opt){return fetch(url,opt).then(function(r){return r.text()}).then(function(t){var d;try{d=JSON.parse(t)}catch(x){throw new Error("html")}if(d.error)throw new Error(d.error);return d})}
+function ferr(e){return e.message==="html"?"Google mengirim halaman login atau error. Periksa deployment Apps Script.":(e instanceof TypeError?"Tidak bisa terhubung ke Apps Script.":e.message)}
+function renderFiles(){
+ var sg=$("fseg");sg.innerHTML="";
+ ["Semua","Peraturan","Excel","Panduan","Lainnya"].forEach(function(c){var b=el("button",null,c);b.type="button";b.setAttribute("aria-pressed",String(c===fcat));b.onclick=function(){fcat=c;renderFiles()};sg.appendChild(b)});
+ var ul=$("fl");ul.innerHTML="";
+ if(!CFG.url){ul.appendChild(el("p","empty","Hubungkan sinkronisasi lewat tombol Sinkron untuk memakai dokumen."));return}
+ var q=$("fq").value.toLowerCase();
+ var arr=files.filter(function(f){return(fcat==="Semua"||f.cat===fcat)&&f.name.toLowerCase().indexOf(q)>-1});
+ if(!arr.length){ul.appendChild(el("p","empty",files.length?"Tidak ada dokumen yang cocok.":"Belum ada dokumen. Ketuk Unggah untuk menambahkan."));return}
+ arr.forEach(function(f){
+  var x0=fext(f.name),li=el("li","row file");li.style.setProperty("--c",fcolor(x0));
+  li.appendChild(el("div","fi",(x0||"file").toUpperCase().slice(0,4)));
+  var d=el("div","tt");d.appendChild(el("span",null,f.name));d.appendChild(el("small",null,fsize(f.size)+" \u00b7 "+f.cat+" \u00b7 "+fmt(ymd(new Date(f.date)))));
+  var a=el("div","fa"),v=el("button",null,"Lihat");v.type="button";v.onclick=function(){openPv(f)};
+  var l=el("a",null,"Drive");l.href=f.url;l.target="_blank";l.rel="noopener";
+  var x=el("button","x","\u00d7");x.type="button";x.setAttribute("aria-label","Hapus "+f.name);
+  x.onclick=function(){if(x.dataset.s!=="1"){x.dataset.s="1";x.textContent="Hapus?";x.style.fontSize="13px";x.style.color="var(--red)";
+   setTimeout(function(){x.dataset.s="";x.textContent="\u00d7";x.style.fontSize="";x.style.color=""},3000)}else delFile(f)};
+  a.append(v,l,x);li.append(d,a);ul.appendChild(li)})}
+function loadFiles(){
+ if(!CFG.url){renderFiles();return}
+ $("fh").textContent="Memuat dokumen...";
+ jreq(CFG.url+(CFG.url.indexOf("?")>-1?"&":"?")+"action=files").then(function(d){
+  if(!d.files){$("fh").textContent="Perbarui Code.gs dan deploy versi baru untuk memakai dokumen.";files=[]}else{files=d.files;$("fh").textContent=""}
+  renderFiles()}).catch(function(e){$("fh").textContent="Dokumen: "+ferr(e);renderFiles()})}
+function delFile(f){$("fh").textContent="Menghapus...";
+ jreq(CFG.url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"delete",id:f.id})})
+ .then(function(){files=files.filter(function(k){return k.id!==f.id});$("fh").textContent="";renderFiles()})
+ .catch(function(e){$("fh").textContent="Gagal menghapus: "+ferr(e)})}
+function openPv(f){$("pT").textContent=f.name;$("pO").href=f.url;$("pf").src="https://drive.google.com/file/d/"+f.id+"/preview";$("ov3").classList.add("on")}
+function closeAll(){["ov","ov2","ov3","ov4"].forEach(function(i){$(i).classList.remove("on")});$("pf").src="about:blank"}
+function doUpload(){
+ var f=$("uF").files[0];
+ if(!f){$("uS").textContent="Pilih berkas dulu.";return}
+ if(f.size>10*1048576){$("uS").textContent="Ukuran berkas maksimal 10 MB.";return}
+ $("uS").textContent="Mengunggah "+f.name+"...";$("us").disabled=true;
+ var r=new FileReader();
+ r.onerror=function(){$("uS").textContent="Berkas tidak bisa dibaca.";$("us").disabled=false};
+ r.onload=function(){
+  jreq(CFG.url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"upload",name:f.name,mime:f.type||"application/octet-stream",category:$("uC").value,data:String(r.result).split(",")[1]})})
+  .then(function(){$("ov4").classList.remove("on");loadFiles()})
+  .catch(function(e){$("uS").textContent="Gagal mengunggah: "+ferr(e)})
+  .then(function(){$("us").disabled=false})};
+ r.readAsDataURL(f)}
+$("up").onclick=function(){if(!CFG.url){openCfg();return}$("uF").value="";$("uS").textContent="Maksimal 10 MB. Siapa pun yang memegang tautan berkas bisa melihatnya.";$("ov4").classList.add("on")};
+$("uF").onchange=function(){var f=this.files[0];if(!f)return;var x=fext(f.name);$("uC").value=/^(xls|xlsx|csv)$/.test(x)?"Excel":x==="pdf"?"Peraturan":"Lainnya"};
+$("us").onclick=doUpload;$("cx4").onclick=closeAll;$("cx3").onclick=closeAll;$("fq").oninput=renderFiles;
+$("ov3").onclick=function(e){if(e.target===$("ov3"))closeAll()};
+$("ov4").onclick=function(e){if(e.target===$("ov4"))closeAll()};
 function openSheet(d){$("fT").value="";$("fD").value=d||"";$("ov").classList.add("on");setTimeout(function(){$("fT").focus()},50)}
 function closeSheet(){$("ov").classList.remove("on")}
 function saveTask(){var t=$("fT").value.trim();if(!t){$("fT").focus();return}
@@ -258,11 +339,11 @@ $("fab").onclick=function(){openSheet(sel)};$("addDay").onclick=function(){openS
 $("cx").onclick=closeSheet;$("sv").onclick=saveTask;
 $("ov").onclick=function(e){if(e.target===$("ov"))closeSheet()};
 $("fT").onkeydown=function(e){if(e.key==="Enter")saveTask()};
-document.onkeydown=function(e){if(e.key==="Escape"){closeSheet();closeCfg()}};
+document.onkeydown=function(e){if(e.key==="Escape")closeAll()};
 $("pv").onclick=function(){vm--;if(vm<0){vm=11;vy--}render()};
 $("nx").onclick=function(){vm++;if(vm>11){vm=0;vy++}render()};
 $("tdy").onclick=function(){vy=now.getFullYear();vm=now.getMonth();sel=today;render()};
-load();render();if(CFG.url)sync();setInterval(sync,60000)})();
+load();render();loadFiles();if(CFG.url)sync();setInterval(sync,60000)})();
 </script>
 </body>
 </html>
